@@ -1,0 +1,15 @@
+export const Colors = {
+  primary: '#6B46C1',
+  primaryLight: '#9333EA',
+  primaryGradient: ['#6B46C1', '#9333EA'] as const,
+  background: '#F9F5FF',
+  white: '#FFFFFF',
+  textDark: '#1F2937',
+  textGray: '#6B7280',
+  textLight: '#9CA3AF',
+  border: '#E9D5FF',
+  card: '#FFFFFF',
+  success: '#10B981',
+  warning: '#F59E0B',
+  error: '#EF4444',
+};

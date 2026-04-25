@@ -1,98 +1,276 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, ScrollView,
+  TouchableOpacity, TextInput, Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { Colors } from '../../constants/Colors';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const { width } = Dimensions.get('window');
+
+const categories = [
+  { emoji: '💻', label: 'Tech' },
+  { emoji: '📈', label: 'Business' },
+  { emoji: '🎨', label: 'Design' },
+  { emoji: '📊', label: 'Finance' },
+  { emoji: '🧠', label: 'Career' },
+  { emoji: '🗣️', label: 'Soft Skills' },
+];
+
+const mentors = [
+  { id: 1, name: 'Priya Sharma', role: 'Product Manager @ Google', rating: 4.9, sessions: 234, emoji: '👩‍💼', tag: 'Tech' },
+  { id: 2, name: 'Rahul Verma', role: 'SDE-3 @ Amazon', rating: 4.8, sessions: 189, emoji: '👨‍💻', tag: 'Tech' },
+  { id: 3, name: 'Anita Nair', role: 'UX Lead @ Swiggy', rating: 4.95, sessions: 312, emoji: '👩‍🎨', tag: 'Design' },
+  { id: 4, name: 'Vikram Singh', role: 'Startup Founder', rating: 4.7, sessions: 156, emoji: '👨‍🚀', tag: 'Business' },
+];
+
+const workshops = [
+  { id: 1, title: 'Crack FAANG Interviews', date: 'Apr 28 • 6PM', seats: 12, emoji: '🚀', price: '₹499' },
+  { id: 2, title: 'Build Your Portfolio', date: 'Apr 30 • 5PM', seats: 8, emoji: '🎨', price: '₹299' },
+  { id: 3, title: 'Resume Masterclass', date: 'May 2 • 7PM', seats: 20, emoji: '📄', price: 'Free' },
+];
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <LinearGradient
+        colors={['#4C1D95', '#6B46C1', '#9333EA']}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.greeting}>Good Morning 👋</Text>
+            <Text style={styles.userName}>Find Your Mentor</Text>
+          </View>
+          <TouchableOpacity style={styles.notifBtn} onPress={() => router.push('/(tabs)/dashboard')}>
+            <Text style={styles.notifEmoji}>🔔</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.searchBar}>
+          <Text style={styles.searchIcon}>🔍</Text>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search mentors, skills..."
+            placeholderTextColor={Colors.textGray}
+          />
+        </View>
+      </LinearGradient>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* Stats Row */}
+      <View style={styles.statsRow}>
+        {[
+          { label: 'Mentors', value: '500+', emoji: '👨‍💼' },
+          { label: 'Sessions', value: '10K+', emoji: '📅' },
+          { label: 'Rating', value: '4.9★', emoji: '⭐' },
+        ].map((stat) => (
+          <TouchableOpacity key={stat.label} style={styles.statCard} onPress={() => router.push('/(tabs)/mentors')}>
+            <Text style={styles.statEmoji}>{stat.emoji}</Text>
+            <Text style={styles.statValue}>{stat.value}</Text>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Categories */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Browse Categories</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+          {categories.map((cat) => (
+            <TouchableOpacity
+              key={cat.label}
+              style={styles.categoryCard}
+              onPress={() => router.push('/(tabs)/mentors')}
+            >
+              <View style={styles.categoryIcon}>
+                <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
+              </View>
+              <Text style={styles.categoryLabel}>{cat.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Top Mentors */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Top Mentors</Text>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/mentors')}>
+            <Text style={styles.seeAll}>See All →</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {mentors.map((mentor) => (
+            <TouchableOpacity
+              key={mentor.id}
+              style={styles.mentorCard}
+              onPress={() => router.push('/mentor-profile')}
+            >
+              <View style={styles.mentorAvatar}>
+                <Text style={styles.mentorEmoji}>{mentor.emoji}</Text>
+              </View>
+              <View style={styles.mentorTagBadge}>
+                <Text style={styles.mentorTagText}>{mentor.tag}</Text>
+              </View>
+              <Text style={styles.mentorName}>{mentor.name}</Text>
+              <Text style={styles.mentorRole} numberOfLines={2}>{mentor.role}</Text>
+              <View style={styles.mentorMeta}>
+                <Text style={styles.mentorRating}>⭐ {mentor.rating}</Text>
+                <Text style={styles.mentorSessions}>{mentor.sessions} sessions</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.bookBtn}
+                onPress={() => router.push('/mentor-profile')}
+              >
+                <Text style={styles.bookBtnText}>Book Now</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Upcoming Workshops */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Upcoming Workshops</Text>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/mentors')}>
+            <Text style={styles.seeAll}>See All →</Text>
+          </TouchableOpacity>
+        </View>
+        {workshops.map((w) => (
+          <TouchableOpacity
+            key={w.id}
+            style={styles.workshopCard}
+            onPress={() => router.push('/booking')}
+          >
+            <View style={styles.workshopLeft}>
+              <View style={styles.workshopEmojiBox}>
+                <Text style={styles.workshopEmoji}>{w.emoji}</Text>
+              </View>
+              <View style={styles.workshopInfo}>
+                <Text style={styles.workshopTitle}>{w.title}</Text>
+                <Text style={styles.workshopDate}>📅 {w.date}</Text>
+                <Text style={styles.workshopSeats}>🪑 {w.seats} seats left</Text>
+              </View>
+            </View>
+            <View style={styles.workshopRight}>
+              <Text style={styles.workshopPrice}>{w.price}</Text>
+              <TouchableOpacity
+                style={styles.joinBtn}
+                onPress={() => router.push('/booking')}
+              >
+                <Text style={styles.joinBtnText}>Join</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <View style={{ height: 24 }} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { flex: 1, backgroundColor: Colors.background },
+  header: { paddingTop: 56, paddingHorizontal: 20, paddingBottom: 32 },
+  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
+  greeting: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginBottom: 4 },
+  userName: { fontSize: 26, fontWeight: '800', color: '#fff' },
+  notifBtn: {
+    width: 42, height: 42, borderRadius: 21,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
   },
-  stepContainer: {
-    gap: 8,
+  notifEmoji: { fontSize: 20 },
+  searchBar: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#fff', borderRadius: 16,
+    paddingHorizontal: 16, height: 50,
+  },
+  searchIcon: { fontSize: 18, marginRight: 10 },
+  searchInput: { flex: 1, fontSize: 15, color: Colors.textDark },
+  statsRow: {
+    flexDirection: 'row', marginHorizontal: 20,
+    marginTop: -20, gap: 12, marginBottom: 8,
+  },
+  statCard: {
+    flex: 1, backgroundColor: Colors.white, borderRadius: 16,
+    padding: 14, alignItems: 'center',
+    shadowColor: '#6B46C1', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,
+  },
+  statEmoji: { fontSize: 20, marginBottom: 4 },
+  statValue: { fontSize: 16, fontWeight: '800', color: Colors.primary },
+  statLabel: { fontSize: 11, color: Colors.textGray, marginTop: 2 },
+  section: { marginTop: 24, paddingHorizontal: 20 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: '800', color: Colors.textDark, marginBottom: 14 },
+  seeAll: { fontSize: 13, color: Colors.primary, fontWeight: '600' },
+  categoryScroll: { marginLeft: -4 },
+  categoryCard: { alignItems: 'center', marginRight: 16 },
+  categoryIcon: {
+    width: 60, height: 60, borderRadius: 20,
+    backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#6B46C1', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08, shadowRadius: 8, elevation: 3,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  categoryEmoji: { fontSize: 28 },
+  categoryLabel: { fontSize: 12, fontWeight: '600', color: Colors.textDark },
+  mentorCard: {
+    width: 170, backgroundColor: Colors.white, borderRadius: 20,
+    padding: 16, marginRight: 14,
+    shadowColor: '#6B46C1', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1, shadowRadius: 12, elevation: 4,
   },
+  mentorAvatar: {
+    width: 56, height: 56, borderRadius: 28,
+    backgroundColor: Colors.background,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+  },
+  mentorEmoji: { fontSize: 32 },
+  mentorTagBadge: {
+    backgroundColor: '#F3EEFF', borderRadius: 8,
+    paddingHorizontal: 8, paddingVertical: 3,
+    alignSelf: 'flex-start', marginBottom: 8,
+  },
+  mentorTagText: { fontSize: 10, color: Colors.primary, fontWeight: '700' },
+  mentorName: { fontSize: 14, fontWeight: '700', color: Colors.textDark, marginBottom: 4 },
+  mentorRole: { fontSize: 11, color: Colors.textGray, marginBottom: 10, lineHeight: 16 },
+  mentorMeta: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  mentorRating: { fontSize: 12, fontWeight: '700', color: Colors.textDark },
+  mentorSessions: { fontSize: 10, color: Colors.textGray },
+  bookBtn: {
+    backgroundColor: Colors.primary, borderRadius: 10,
+    paddingVertical: 8, alignItems: 'center',
+  },
+  bookBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  workshopCard: {
+    backgroundColor: Colors.white, borderRadius: 16, padding: 16,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: 12,
+    shadowColor: '#6B46C1', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08, shadowRadius: 8, elevation: 3,
+  },
+  workshopLeft: { flexDirection: 'row', flex: 1, marginRight: 12 },
+  workshopEmojiBox: {
+    width: 48, height: 48, borderRadius: 14,
+    backgroundColor: Colors.background,
+    alignItems: 'center', justifyContent: 'center', marginRight: 12,
+  },
+  workshopEmoji: { fontSize: 24 },
+  workshopInfo: { flex: 1 },
+  workshopTitle: { fontSize: 14, fontWeight: '700', color: Colors.textDark, marginBottom: 4 },
+  workshopDate: { fontSize: 11, color: Colors.textGray, marginBottom: 2 },
+  workshopSeats: { fontSize: 11, color: Colors.warning },
+  workshopRight: { alignItems: 'center' },
+  workshopPrice: { fontSize: 14, fontWeight: '800', color: Colors.primary, marginBottom: 8 },
+  joinBtn: {
+    backgroundColor: Colors.primary, borderRadius: 10,
+    paddingHorizontal: 14, paddingVertical: 7,
+  },
+  joinBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });
