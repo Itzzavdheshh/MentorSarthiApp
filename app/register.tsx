@@ -31,7 +31,7 @@ export default function RegisterScreen() {
       <ScrollView style={styles.container} bounces={false}>
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}
-          style={styles.header}
+          style={[styles.header, { height: Platform.OS === 'web' ? 240 : height * 0.28 }]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
@@ -44,7 +44,8 @@ export default function RegisterScreen() {
           </View>
         </LinearGradient>
 
-        <View style={styles.formCard}>
+        <View className="w-full max-w-md mx-auto px-4 sm:px-0">
+          <View style={styles.formCard}>
           <Text style={styles.formTitle}>Sign Up</Text>
           <Text style={styles.formSubtitle}>Join thousands of mentees & mentors</Text>
 
@@ -173,6 +174,8 @@ export default function RegisterScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        </View>
+        <View className="h-10" />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -195,6 +198,8 @@ const styles = StyleSheet.create({
   formCard: {
     backgroundColor: Colors.white,
     borderTopLeftRadius: 32, borderTopRightRadius: 32,
+    borderBottomLeftRadius: Platform.OS === 'web' ? 32 : 0,
+    borderBottomRightRadius: Platform.OS === 'web' ? 32 : 0,
     marginTop: -24, padding: 28, paddingTop: 32,
     shadowColor: '#6B46C1', shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1, shadowRadius: 12, elevation: 8,

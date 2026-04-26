@@ -1,36 +1,42 @@
 import {
   View, Text, StyleSheet, ScrollView,
-  TouchableOpacity, TextInput, Dimensions,
+  TouchableOpacity, TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { useMemo, useState } from 'react';
+import {
+  categories,
+  findCategoryLabel,
+  mentorMatchesQuery,
+  mentors,
+  workshops,
+} from '../../constants/AppData';
 import { Colors } from '../../constants/Colors';
 
-const { width } = Dimensions.get('window');
-
-const categories = [
-  { emoji: '💻', label: 'Tech' },
-  { emoji: '📈', label: 'Business' },
-  { emoji: '🎨', label: 'Design' },
-  { emoji: '📊', label: 'Finance' },
-  { emoji: '🧠', label: 'Career' },
-  { emoji: '🗣️', label: 'Soft Skills' },
-];
-
-const mentors = [
-  { id: 1, name: 'Priya Sharma', role: 'Product Manager @ Google', rating: 4.9, sessions: 234, emoji: '👩‍💼', tag: 'Tech' },
-  { id: 2, name: 'Rahul Verma', role: 'SDE-3 @ Amazon', rating: 4.8, sessions: 189, emoji: '👨‍💻', tag: 'Tech' },
-  { id: 3, name: 'Anita Nair', role: 'UX Lead @ Swiggy', rating: 4.95, sessions: 312, emoji: '👩‍🎨', tag: 'Design' },
-  { id: 4, name: 'Vikram Singh', role: 'Startup Founder', rating: 4.7, sessions: 156, emoji: '👨‍🚀', tag: 'Business' },
-];
-
-const workshops = [
-  { id: 1, title: 'Crack FAANG Interviews', date: 'Apr 28 • 6PM', seats: 12, emoji: '🚀', price: '₹499' },
-  { id: 2, title: 'Build Your Portfolio', date: 'Apr 30 • 5PM', seats: 8, emoji: '🎨', price: '₹299' },
-  { id: 3, title: 'Resume Masterclass', date: 'May 2 • 7PM', seats: 20, emoji: '📄', price: 'Free' },
-];
-
 export default function HomeScreen() {
+  const [searchText, setSearchText] = useState('');
+  const searchQuery = searchText.trim();
+  const visibleMentors = useMemo(
+    () => searchQuery
+      ? mentors.filter((mentor) => mentorMatchesQuery(mentor, searchQuery))
+      : mentors.slice(0, 4),
+    [searchQuery]
+  );
+
+  const openMentorSearch = () => {
+    const category = findCategoryLabel(searchQuery);
+
+    router.push({
+      pathname: '/(tabs)/mentors',
+      params: category
+        ? { category }
+        : searchQuery
+          ? { search: searchQuery }
+          : {},
+    });
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
@@ -53,7 +59,11 @@ export default function HomeScreen() {
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search mentors, skills..."
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={openMentorSearch}
+            returnKeyType="search"
+            placeholder="Search mentors, categories..."
             placeholderTextColor={Colors.textGray}
           />
         </View>
@@ -82,7 +92,12 @@ export default function HomeScreen() {
             <TouchableOpacity
               key={cat.label}
               style={styles.categoryCard}
-              onPress={() => router.push('/(tabs)/mentors')}
+              onPress={() =>
+                router.push({
+                  pathname: '/(tabs)/mentors',
+                  params: { category: cat.label },
+                })
+              }
             >
               <View style={styles.categoryIcon}>
                 <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
@@ -96,13 +111,13 @@ export default function HomeScreen() {
       {/* Top Mentors */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Top Mentors</Text>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/mentors')}>
+          <Text style={styles.sectionTitle}>{searchQuery ? 'Search Results' : 'Top Mentors'}</Text>
+          <TouchableOpacity onPress={openMentorSearch}>
             <Text style={styles.seeAll}>See All →</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {mentors.map((mentor) => (
+          {visibleMentors.map((mentor) => (
             <TouchableOpacity
               key={mentor.id}
               style={styles.mentorCard}
@@ -129,17 +144,23 @@ export default function HomeScreen() {
             </TouchableOpacity>
           ))}
         </ScrollView>
+        {visibleMentors.length === 0 && (
+          <View style={styles.emptySearchCard}>
+            <Text style={styles.emptySearchTitle}>No mentors found</Text>
+            <Text style={styles.emptySearchText}>Try another mentor name or category.</Text>
+          </View>
+        )}
       </View>
 
       {/* Upcoming Workshops */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Upcoming Workshops</Text>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/mentors')}>
+          <TouchableOpacity onPress={() => router.push('/workshop')}>
             <Text style={styles.seeAll}>See All →</Text>
           </TouchableOpacity>
         </View>
-        {workshops.map((w) => (
+        {workshops.slice(0, 3).map((w) => (
           <TouchableOpacity
             key={w.id}
             style={styles.workshopCard}
@@ -220,6 +241,16 @@ const styles = StyleSheet.create({
   },
   categoryEmoji: { fontSize: 28 },
   categoryLabel: { fontSize: 12, fontWeight: '600', color: Colors.textDark },
+  emptySearchCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  emptySearchTitle: { fontSize: 15, fontWeight: '800', color: Colors.textDark, marginBottom: 6 },
+  emptySearchText: { fontSize: 12, color: Colors.textGray, textAlign: 'center' },
   mentorCard: {
     width: 170, backgroundColor: Colors.white, borderRadius: 20,
     padding: 16, marginRight: 14,

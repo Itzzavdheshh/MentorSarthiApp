@@ -1,7 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/Colors';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useProfile } from '../../context/ProfileContext';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 const menuItems = [
   { emoji: '👤', label: 'Edit Profile', sub: 'Update your info' },
@@ -15,6 +16,17 @@ const menuItems = [
 ];
 
 export default function ProfileScreen() {
+  const { profile } = useProfile();
+
+  const handleMenuPress = (label: string) => {
+    if (label === 'My Bookings') router.push('/(tabs)/dashboard');
+    else if (label === 'Saved Mentors') router.push('/(tabs)/mentors');
+    else if (label === 'Edit Profile') router.push('/edit-profile');
+    else if (label === 'Terms of Service') router.push('/terms-of-service');
+    else if (label === 'Privacy Policy' || label === 'Privacy & Security') router.push('/privacy-policy');
+    else if (label === 'Help & Support' || label === 'Notifications') router.push('/help-support');
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
@@ -29,8 +41,8 @@ export default function ProfileScreen() {
             <Text style={styles.avatarEmoji}>🧑‍💻</Text>
           </View>
         </View>
-        <Text style={styles.userName}>Avdhesh Kumar</Text>
-        <Text style={styles.userEmail}>itzzavdhesh@email.com</Text>
+        <Text style={styles.userName}>{profile.name}</Text>
+        <Text style={styles.userEmail}>{profile.email}</Text>
         <View style={styles.roleBadge}>
           <Text style={styles.roleText}>🎓 Mentee</Text>
         </View>
@@ -56,12 +68,7 @@ export default function ProfileScreen() {
           <TouchableOpacity
           key={item.label}
           style={[styles.menuItem, index === menuItems.length - 1 && { borderBottomWidth: 0 }]}
-          onPress={() => {
-            if (item.label === 'My Bookings') router.push('/(tabs)/dashboard');
-            else if (item.label === 'Saved Mentors') router.push('/(tabs)/mentors');
-            else if (item.label === 'Edit Profile') Alert.alert('Edit Profile', 'Profile editing coming soon!');
-            else Alert.alert('Coming Soon', `${item.label} will be available soon!`);
-            }}>
+          onPress={() => handleMenuPress(item.label)}>
             <View style={styles.menuLeft}>
               <View style={styles.menuIconBox}>
                 <Text style={styles.menuEmoji}>{item.emoji}</Text>

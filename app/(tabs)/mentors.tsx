@@ -1,45 +1,72 @@
 import {
   View, Text, StyleSheet, ScrollView,
-  TouchableOpacity, TextInput, Dimensions,
+  TouchableOpacity, TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
+import { mentorFilters, mentorMatchesQuery, mentors } from '../../constants/AppData';
 
-const { width } = Dimensions.get('window');
+function getParamValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
-const filters = ['All', 'Tech', 'Design', 'Business', 'Finance', 'Career'];
-
-const mentors = [
-  { id: 1, name: 'Priya Sharma', role: 'Product Manager @ Google', rating: 4.9, sessions: 234, emoji: '👩‍💼', tag: 'Tech', price: '₹1,500/hr', exp: '8 yrs' },
-  { id: 2, name: 'Rahul Verma', role: 'SDE-3 @ Amazon', rating: 4.8, sessions: 189, emoji: '👨‍💻', tag: 'Tech', price: '₹1,200/hr', exp: '6 yrs' },
-  { id: 3, name: 'Anita Nair', role: 'UX Lead @ Swiggy', rating: 4.95, sessions: 312, emoji: '👩‍🎨', tag: 'Design', price: '₹1,000/hr', exp: '7 yrs' },
-  { id: 4, name: 'Vikram Singh', role: 'Startup Founder', rating: 4.7, sessions: 156, emoji: '👨‍🚀', tag: 'Business', price: '₹2,000/hr', exp: '10 yrs' },
-  { id: 5, name: 'Neha Gupta', role: 'Data Scientist @ Flipkart', rating: 4.85, sessions: 98, emoji: '👩‍🔬', tag: 'Tech', price: '₹900/hr', exp: '5 yrs' },
-  { id: 6, name: 'Arjun Mehta', role: 'Investment Banker', rating: 4.75, sessions: 201, emoji: '👨‍💰', tag: 'Finance', price: '₹1,800/hr', exp: '9 yrs' },
-];
+function getSelectedFilter(category?: string | string[]) {
+  const selectedCategory = getParamValue(category);
+  return selectedCategory && mentorFilters.includes(selectedCategory) ? selectedCategory : 'All';
+}
 
 export default function MentorsScreen() {
+  const { category, search } = useLocalSearchParams<{
+    category?: string | string[];
+    search?: string | string[];
+  }>();
+  const selectedFilter = getSelectedFilter(category);
+  const [searchText, setSearchText] = useState(getParamValue(search) ?? '');
+
+  useEffect(() => {
+    setSearchText(getParamValue(search) ?? '');
+  }, [search]);
+
+  const filteredMentors = useMemo(
+    () => mentors.filter((mentor) => {
+      const matchesFilter = selectedFilter === 'All' || mentor.tag === selectedFilter;
+      return matchesFilter && mentorMatchesQuery(mentor, searchText);
+    }),
+    [selectedFilter, searchText]
+  );
+
   return (
     <View style={styles.container}>
+      <View className="w-full max-w-6xl mx-auto pb-8">
       {/* Header */}
       <LinearGradient
         colors={['#4C1D95', '#6B46C1', '#9333EA']}
-        style={styles.header}
+        className="pt-14 px-5 pb-8 lg:rounded-b-3xl lg:px-8"
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
         <Text style={styles.headerTitle}>Find Mentors</Text>
         <Text style={styles.headerSub}>500+ experts ready to guide you</Text>
-        <View style={styles.searchBar}>
+        <View className="flex-row items-center bg-white rounded-2xl px-4 h-14 w-full max-w-3xl">
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
+            value={searchText}
+            onChangeText={setSearchText}
+            returnKeyType="search"
             placeholder="Search by name or skill..."
             placeholderTextColor={Colors.textGray}
           />
-          <TouchableOpacity style={styles.filterIconBtn}>
-            <Text style={styles.filterIcon}>⚙️</Text>
+          <TouchableOpacity
+            style={styles.filterIconBtn}
+            onPress={() => {
+              setSearchText('');
+              router.setParams({ search: '' });
+            }}
+          >
+            <Text style={styles.filterIcon}>{searchText ? '×' : '⚙️'}</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -52,30 +79,37 @@ export default function MentorsScreen() {
           style={styles.filterScroll}
           contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}
         >
-          {filters.map((f, i) => (
+          {mentorFilters.map((f) => (
             <TouchableOpacity
               key={f}
-              style={[styles.filterPill, i === 0 && styles.filterPillActive]}
+              style={[styles.filterPill, selectedFilter === f && styles.filterPillActive]}
+              onPress={() => router.setParams({ category: f === 'All' ? '' : f })}
             >
-              <Text style={[styles.filterText, i === 0 && styles.filterTextActive]}>{f}</Text>
+              <Text style={[styles.filterText, selectedFilter === f && styles.filterTextActive]}>{f}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
         {/* Results Count */}
         <View style={styles.resultsRow}>
-          <Text style={styles.resultsText}>Showing <Text style={styles.resultsCount}>6 mentors</Text></Text>
+          <Text style={styles.resultsText}>
+            Showing{' '}
+            <Text style={styles.resultsCount}>
+              {filteredMentors.length} {filteredMentors.length === 1 ? 'mentor' : 'mentors'}
+            </Text>
+          </Text>
           <TouchableOpacity style={styles.sortBtn}>
             <Text style={styles.sortText}>Sort by: Rating ↓</Text>
           </TouchableOpacity>
         </View>
 
         {/* Mentor Cards */}
-        <View style={styles.mentorList}>
-          {mentors.map((mentor) => (
+        <View className="px-5 lg:px-8 gap-4 grid sm:grid-cols-2 lg:grid-cols-3">
+          {filteredMentors.map((mentor) => (
             <TouchableOpacity
             key={mentor.id}
             style={styles.mentorCard}
+            className="!mb-0 flex-1"
             onPress={() => router.push('/mentor-profile')}
             >
               {/* Left */}
@@ -119,23 +153,24 @@ export default function MentorsScreen() {
               </View>
             </TouchableOpacity>
           ))}
+          {filteredMentors.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyTitle}>No mentors found</Text>
+              <Text style={styles.emptyText}>Try another mentor name or category.</Text>
+            </View>
+          )}
         </View>
         <View style={{ height: 24 }} />
       </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 56, paddingHorizontal: 20, paddingBottom: 28 },
   headerTitle: { fontSize: 26, fontWeight: '800', color: '#fff', marginBottom: 4 },
   headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.75)', marginBottom: 16 },
-  searchBar: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 16,
-    paddingHorizontal: 16, height: 50,
-  },
   searchIcon: { fontSize: 18, marginRight: 10 },
   searchInput: { flex: 1, fontSize: 15, color: Colors.textDark },
   filterIconBtn: { padding: 4 },
@@ -161,7 +196,16 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: Colors.border,
   },
   sortText: { fontSize: 12, color: Colors.textDark, fontWeight: '600' },
-  mentorList: { paddingHorizontal: 20, gap: 14 },
+  emptyState: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  emptyTitle: { fontSize: 16, fontWeight: '800', color: Colors.textDark, marginBottom: 6 },
+  emptyText: { fontSize: 13, color: Colors.textGray, textAlign: 'center' },
   mentorCard: {
     backgroundColor: Colors.white, borderRadius: 20,
     padding: 16, flexDirection: 'row',
@@ -173,6 +217,7 @@ const styles = StyleSheet.create({
     width: 64, height: 64, borderRadius: 32,
     backgroundColor: Colors.background,
     alignItems: 'center', justifyContent: 'center',
+    overflow: 'hidden',
     borderWidth: 2, borderColor: Colors.border,
   },
   avatarEmoji: { fontSize: 36 },

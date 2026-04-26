@@ -28,7 +28,7 @@ export default function LoginScreen() {
       <ScrollView style={styles.container} bounces={false}>
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}
-          style={styles.header}
+          style={[styles.header, { height: Platform.OS === 'web' ? 300 : height * 0.38 }]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
@@ -41,7 +41,8 @@ export default function LoginScreen() {
           </View>
         </LinearGradient>
 
-        <View style={styles.formCard}>
+        <View className="w-full max-w-md mx-auto px-4 sm:px-0">
+          <View style={styles.formCard}>
           <Text style={styles.formTitle}>Sign In</Text>
           <Text style={styles.formSubtitle}>Enter your credentials to continue</Text>
 
@@ -115,6 +116,8 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        </View>
+        <View className="h-10" />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -137,8 +140,10 @@ const styles = StyleSheet.create({
   formCard: {
     backgroundColor: Colors.white,
     borderTopLeftRadius: 32, borderTopRightRadius: 32,
+    borderBottomLeftRadius: Platform.OS === 'web' ? 32 : 0,
+    borderBottomRightRadius: Platform.OS === 'web' ? 32 : 0,
     marginTop: -24, padding: 28, paddingTop: 32,
-    minHeight: height * 0.7,
+    minHeight: Platform.OS === 'web' ? 400 : height * 0.7,
     shadowColor: '#6B46C1', shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1, shadowRadius: 12, elevation: 8,
   },

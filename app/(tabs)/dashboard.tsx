@@ -39,35 +39,37 @@ export default function DashboardScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#4C1D95', '#6B46C1', '#9333EA']}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <Text style={styles.headerTitle}>My Dashboard</Text>
-        <Text style={styles.headerSub}>Track your mentorship journey</Text>
-        <View style={styles.statsRow}>
-          {[
-            { label: 'Sessions', value: '12', emoji: '📅' },
-            { label: 'Hours', value: '18', emoji: '⏱️' },
-            { label: 'Mentors', value: '4', emoji: '👨‍💼' },
-          ].map((s) => (
-            <View key={s.label} style={styles.statCard}>
-              <Text style={styles.statEmoji}>{s.emoji}</Text>
-              <Text style={styles.statValue}>{s.value}</Text>
-              <Text style={styles.statLabel}>{s.label}</Text>
-            </View>
-          ))}
-        </View>
-      </LinearGradient>
+      <View className="w-full max-w-5xl mx-auto pb-8">
+        {/* Header */}
+        <LinearGradient
+          colors={['#4C1D95', '#6B46C1', '#9333EA']}
+          className="pt-14 px-5 pb-8 lg:rounded-b-3xl lg:px-8"
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.headerTitle}>My Dashboard</Text>
+          <Text style={styles.headerSub}>Track your mentorship journey</Text>
+          <View className="flex-row flex-wrap sm:flex-nowrap gap-3">
+            {[
+              { label: 'Sessions', value: '12', emoji: '📅' },
+              { label: 'Hours', value: '18', emoji: '⏱️' },
+              { label: 'Mentors', value: '4', emoji: '👨‍💼' },
+            ].map((s) => (
+              <View key={s.label} className="flex-1 min-w-[30%] bg-white/15 rounded-2xl p-3.5 items-center border border-white/25">
+                <Text style={styles.statEmoji}>{s.emoji}</Text>
+                <Text style={styles.statValue}>{s.value}</Text>
+                <Text style={styles.statLabel}>{s.label}</Text>
+              </View>
+            ))}
+          </View>
+        </LinearGradient>
 
       {/* Upcoming Sessions */}
-      <View style={styles.section}>
+      <View style={styles.section} className="lg:px-8">
         <Text style={styles.sectionTitle}>Upcoming Sessions</Text>
+        <View className="grid gap-3 sm:grid-cols-2">
         {upcoming.map((s) => (
-          <View key={s.id} style={styles.sessionCard}>
+          <View key={s.id} style={styles.sessionCard} className="!mb-0 flex-1">
             <View style={styles.sessionLeft}>
               <View style={styles.sessionAvatar}>
                 <Text style={styles.sessionEmoji}>{s.emoji}</Text>
@@ -99,13 +101,15 @@ export default function DashboardScreen() {
             </View>
           </View>
         ))}
+        </View>
       </View>
 
       {/* Past Sessions */}
-      <View style={styles.section}>
+      <View style={styles.section} className="lg:px-8">
         <Text style={styles.sectionTitle}>Past Sessions</Text>
+        <View className="grid gap-3 sm:grid-cols-2">
         {past.map((s) => (
-          <View key={s.id} style={styles.pastCard}>
+          <View key={s.id} style={styles.pastCard} className="!mb-0 flex-1">
             <View style={styles.sessionAvatar}>
               <Text style={styles.sessionEmoji}>{s.emoji}</Text>
             </View>
@@ -122,12 +126,13 @@ export default function DashboardScreen() {
             </View>
           </View>
         ))}
+        </View>
       </View>
 
       {/* Quick Actions */}
-      <View style={styles.section}>
+      <View style={styles.section} className="lg:px-8">
         <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.actionsGrid}>
+        <View className="flex-row flex-wrap gap-3">
           {quickActions.map((a) => (
             <TouchableOpacity
               key={a.label}
@@ -140,6 +145,7 @@ export default function DashboardScreen() {
           ))}
         </View>
       </View>
+      </View>
 
       <View style={{ height: 24 }} />
     </ScrollView>
@@ -148,15 +154,8 @@ export default function DashboardScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 56, paddingHorizontal: 20, paddingBottom: 32 },
   headerTitle: { fontSize: 26, fontWeight: '800', color: '#fff', marginBottom: 4 },
   headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.75)', marginBottom: 20 },
-  statsRow: { flexDirection: 'row', gap: 12 },
-  statCard: {
-    flex: 1, backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 16, padding: 14, alignItems: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)',
-  },
   statEmoji: { fontSize: 22, marginBottom: 6 },
   statValue: { fontSize: 22, fontWeight: '800', color: '#fff' },
   statLabel: { fontSize: 11, color: 'rgba(255,255,255,0.75)', marginTop: 2 },
@@ -201,9 +200,8 @@ const styles = StyleSheet.create({
     borderRadius: 10, paddingHorizontal: 12, paddingVertical: 5,
   },
   rebookText: { color: Colors.primary, fontSize: 11, fontWeight: '700' },
-  actionsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   actionCard: {
-    width: '47%', backgroundColor: Colors.white, borderRadius: 18,
+    minWidth: '47%', flex: 1, backgroundColor: Colors.white, borderRadius: 18,
     padding: 20, alignItems: 'center',
     shadowColor: '#6B46C1', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,

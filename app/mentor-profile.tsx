@@ -21,10 +21,11 @@ export default function MentorProfileScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="w-full max-w-4xl mx-auto">
         {/* Header */}
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}
-          style={styles.header}
+          className="pt-14 pb-14 px-5 lg:rounded-b-3xl"
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
@@ -66,53 +67,60 @@ export default function MentorProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* About */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.aboutText}>
-            Hi! I'm Priya, a Product Manager at Google with 8+ years of experience in building
-            consumer products. I've helped 200+ mentees crack PM interviews at top companies
-            including Google, Microsoft, Amazon and Flipkart. I specialize in product strategy,
-            roadmap planning, and career transitions into product management.
-          </Text>
-        </View>
+        <View className="lg:grid lg:grid-cols-12 lg:gap-8 px-5 lg:px-8 mt-6">
+          <View className="lg:col-span-7">
+            {/* About */}
+            <View className="mb-6">
+              <Text style={styles.sectionTitle}>About</Text>
+              <Text style={styles.aboutText}>
+                Hi! I'm Priya, a Product Manager at Google with 8+ years of experience in building
+                consumer products. I've helped 200+ mentees crack PM interviews at top companies
+                including Google, Microsoft, Amazon and Flipkart. I specialize in product strategy,
+                roadmap planning, and career transitions into product management.
+              </Text>
+            </View>
 
-        {/* Expertise */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Expertise</Text>
-          <View style={styles.tagsRow}>
-            {['Product Strategy', 'PM Interviews', 'Roadmapping', 'User Research', 'OKRs', 'Agile'].map((tag) => (
-              <View key={tag} style={styles.expertTag}>
-                <Text style={styles.expertTagText}>{tag}</Text>
+            {/* Expertise */}
+            <View className="mb-6">
+              <Text style={styles.sectionTitle}>Expertise</Text>
+              <View style={styles.tagsRow}>
+                {['Product Strategy', 'PM Interviews', 'Roadmapping', 'User Research', 'OKRs', 'Agile'].map((tag) => (
+                  <View key={tag} style={styles.expertTag}>
+                    <Text style={styles.expertTagText}>{tag}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
+            </View>
           </View>
-        </View>
 
-        {/* Availability */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Availability</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daysScroll}>
-            {days.map((day, i) => (
-              <TouchableOpacity key={day} style={[styles.dayCard, i === 0 && styles.dayCardActive]}>
-                <Text style={[styles.dayText, i === 0 && styles.dayTextActive]}>{day}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <View style={styles.slotsGrid}>
-            {slots.map((slot, i) => (
-              <TouchableOpacity key={slot} style={[styles.slotBtn, i === 1 && styles.slotBtnActive]}>
-                <Text style={[styles.slotText, i === 1 && styles.slotTextActive]}>{slot}</Text>
-              </TouchableOpacity>
-            ))}
+          <View className="lg:col-span-5">
+            {/* Availability */}
+            <View className="mb-6">
+              <Text style={styles.sectionTitle}>Availability</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daysScroll}>
+                {days.map((day, i) => (
+                  <TouchableOpacity key={day} style={[styles.dayCard, i === 0 && styles.dayCardActive]}>
+                    <Text style={[styles.dayText, i === 0 && styles.dayTextActive]}>{day}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+              <View style={styles.slotsGrid}>
+                {slots.map((slot, i) => (
+                  <TouchableOpacity key={slot} style={[styles.slotBtn, i === 1 && styles.slotBtnActive]}>
+                    <Text style={[styles.slotText, i === 1 && styles.slotTextActive]}>{slot}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
           </View>
         </View>
 
         {/* Reviews */}
-        <View style={styles.section}>
+        <View className="px-5 lg:px-8 mt-4">
           <Text style={styles.sectionTitle}>Reviews ({reviews.length})</Text>
+          <View className="grid sm:grid-cols-2 gap-4">
           {reviews.map((r) => (
-            <View key={r.name} style={styles.reviewCard}>
+            <View key={r.name} style={styles.reviewCard} className="!mb-0">
               <View style={styles.reviewTop}>
                 <View style={styles.reviewAvatar}>
                   <Text style={styles.reviewAvatarText}>{r.name[0]}</Text>
@@ -126,13 +134,15 @@ export default function MentorProfileScreen() {
               <Text style={styles.reviewComment}>{r.comment}</Text>
             </View>
           ))}
+          </View>
         </View>
 
         <View style={{ height: 100 }} />
+        </View>
       </ScrollView>
 
       {/* Sticky Book Button */}
-      <View style={styles.stickyBook}>
+      <View style={styles.stickyBook} className="lg:hidden">
         <TouchableOpacity
           style={styles.stickyBookBtn}
           onPress={() => router.push('/booking')}
@@ -152,10 +162,9 @@ export default function MentorProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingTop: 56, paddingBottom: 32 },
-  backBtn: { paddingHorizontal: 20, marginBottom: 16 },
+  backBtn: { marginBottom: 16 },
   backText: { color: 'rgba(255,255,255,0.8)', fontSize: 15, fontWeight: '600' },
-  profileTop: { alignItems: 'center', paddingHorizontal: 20 },
+  profileTop: { alignItems: 'center' },
   avatar: {
     width: 90, height: 90, borderRadius: 45,
     backgroundColor: 'rgba(255,255,255,0.2)',
@@ -186,7 +195,6 @@ const styles = StyleSheet.create({
   bookNowBtn: { borderRadius: 14, overflow: 'hidden' },
   bookNowGrad: { paddingHorizontal: 20, paddingVertical: 12 },
   bookNowText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  section: { paddingHorizontal: 20, marginTop: 24 },
   sectionTitle: { fontSize: 18, fontWeight: '800', color: Colors.textDark, marginBottom: 12 },
   aboutText: { fontSize: 14, color: Colors.textGray, lineHeight: 22 },
   tagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
