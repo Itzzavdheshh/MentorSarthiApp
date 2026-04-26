@@ -104,7 +104,33 @@ The application is built entirely as a frontend monolith using the **Expo (React
    - **Mobile:** Scan the QR code displayed in the terminal using the Expo Go app on your phone.
 
 ## 📸 Screenshots 
-*(Consider adding screenshots here of the Dashboard, Mentor Profile, and Booking screens on both Mobile and Desktop views to showcase the responsive design.)*
+
+## 1.
+<img width="738" height="1600" alt="a" src="https://github.com/user-attachments/assets/69c5c0b3-099d-474c-b735-efd5370a2458" />
+
+## 2.
+<img width="738" height="1600" alt="aaaaaa" src="https://github.com/user-attachments/assets/09f5198f-60fa-48ba-a20e-728c77f38e13" />
+
+## 3.
+<img width="738" height="1600" alt="aaaaa" src="https://github.com/user-attachments/assets/17da10d0-1ce6-41d4-9ead-6ff255311f0e" />
+
+## 4.
+<img width="738" height="1600" alt="aaaa" src="https://github.com/user-attachments/assets/00703ee3-c334-4225-87ec-90d80eaa622e" />
+
+## 5.
+<img width="738" height="1600" alt="aaa" src="https://github.com/user-attachments/assets/db741483-837e-4398-adca-70de5fb14905" />
+
+## 6.
+<img width="738" height="1600" alt="aa" src="https://github.com/user-attachments/assets/02467403-5c81-4016-9530-ab56d98003b8" />
+
+## 7.
+<img width="961" height="869" alt="image" src="https://github.com/user-attachments/assets/c0a036cd-599a-416b-ad94-9cb0edf15a58" />
+
+## 8.
+<img width="1913" height="948" alt="image" src="https://github.com/user-attachments/assets/3c0a6517-b493-4641-bbf9-99f80a0073cb" />
+
+## 9.
+<img width="1904" height="939" alt="image" src="https://github.com/user-attachments/assets/264298e8-94e5-41ce-b8d6-77134290013d" />
 
 ## 🤝 Contribution Guide
 1. Fork the repository.
