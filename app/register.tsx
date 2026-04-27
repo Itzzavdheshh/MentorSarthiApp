@@ -1,4 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../constants/firebaseConfig';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -22,6 +24,25 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState<'mentee' | 'mentor'>('mentee');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleRegister() {
+    if (!name || !email || !password || !confirmPassword) { setError('Please fill in all fields.'); return; }
+    if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
+    setError('');
+    setLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser!, { displayName: name });
+      router.replace('/(tabs)');
+    } catch (e: any) {
+      setError(e.message ?? 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -138,10 +159,13 @@ export default function RegisterScreen() {
             </View>
           </View>
 
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
           {/* Register Button */}
           <TouchableOpacity
             style={styles.registerBtn}
-            onPress={() => router.replace('/(tabs)')}
+            onPress={handleRegister}
+            disabled={loading}
           >
             <LinearGradient
               colors={['#6B46C1', '#9333EA']}
@@ -149,7 +173,7 @@ export default function RegisterScreen() {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
-              <Text style={styles.registerBtnText}>Create Account →</Text>
+              <Text style={styles.registerBtnText}>{loading ? 'Creating account...' : 'Create Account →'}</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -228,6 +252,7 @@ const styles = StyleSheet.create({
   inputIcon: { fontSize: 16, marginRight: 8 },
   input: { flex: 1, height: 50, fontSize: 15, color: Colors.textDark },
   registerBtn: { borderRadius: 14, overflow: 'hidden', marginTop: 8, marginBottom: 20 },
+  errorText: { color: '#DC2626', fontSize: 13, marginBottom: 12, textAlign: 'center' },
   registerBtnGradient: { height: 52, alignItems: 'center', justifyContent: 'center' },
   registerBtnText: { color: '#fff', fontSize: 17, fontWeight: '700', letterSpacing: 0.5 },
   divider: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },

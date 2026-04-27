@@ -1,4 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../constants/firebaseConfig';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -19,6 +21,22 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleLogin() {
+    if (!email || !password) { setError('Please fill in all fields.'); return; }
+    setError('');
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.replace('/(tabs)');
+    } catch (e: any) {
+      setError(e.message ?? 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -84,9 +102,12 @@ export default function LoginScreen() {
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
           <TouchableOpacity
             style={styles.loginBtn}
-            onPress={() => router.replace('/(tabs)')}
+            onPress={handleLogin}
+            disabled={loading}
           >
             <LinearGradient
               colors={['#6B46C1', '#9333EA']}
@@ -94,7 +115,7 @@ export default function LoginScreen() {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
-              <Text style={styles.loginBtnText}>Sign In →</Text>
+              <Text style={styles.loginBtnText}>{loading ? 'Signing in...' : 'Sign In →'}</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -159,7 +180,8 @@ const styles = StyleSheet.create({
   },
   inputIcon: { fontSize: 16, marginRight: 8 },
   input: { flex: 1, height: 50, fontSize: 15, color: Colors.textDark },
-  forgotBtn: { alignSelf: 'flex-end', marginBottom: 20 },
+  forgotBtn: { alignSelf: 'flex-end', marginBottom: 12 },
+  errorText: { color: '#DC2626', fontSize: 13, marginBottom: 12, textAlign: 'center' },
   forgotText: { color: Colors.primary, fontSize: 13, fontWeight: '600' },
   loginBtn: { borderRadius: 14, overflow: 'hidden', marginBottom: 20 },
   loginBtnGradient: { height: 52, alignItems: 'center', justifyContent: 'center' },

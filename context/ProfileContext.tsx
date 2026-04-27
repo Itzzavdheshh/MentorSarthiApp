@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../constants/firebaseConfig';
 import {
   createContext,
   ReactNode,
@@ -40,16 +42,24 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
     AsyncStorage.getItem(PROFILE_STORAGE_KEY)
       .then((value) => {
-        if (!value || !isMounted) {
-          return;
-        }
-
+        if (!value || !isMounted) return;
         setProfile({ ...defaultProfile, ...JSON.parse(value) });
       })
       .catch(() => {});
 
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && isMounted) {
+        setProfile((prev) => ({
+          ...prev,
+          name: user.displayName || prev.name,
+          email: user.email || prev.email,
+        }));
+      }
+    });
+
     return () => {
       isMounted = false;
+      unsubscribe();
     };
   }, []);
 

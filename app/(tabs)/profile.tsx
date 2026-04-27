@@ -1,5 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../constants/firebaseConfig';
 import { Colors } from '../../constants/Colors';
 import { useProfile } from '../../context/ProfileContext';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
@@ -87,7 +89,7 @@ export default function ProfileScreen() {
       <View style={styles.logoutSection}>
         <TouchableOpacity
           style={styles.logoutBtn}
-          onPress={() => router.replace('/login')}
+        onPress={async () => { await signOut(auth); router.replace('/login'); }}
         >
           <Text style={styles.logoutText}>🚪 Sign Out</Text>
         </TouchableOpacity>
