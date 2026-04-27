@@ -28,7 +28,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
       {/* Header */}
       <LinearGradient
         colors={['#4C1D95', '#6B46C1', '#9333EA']}

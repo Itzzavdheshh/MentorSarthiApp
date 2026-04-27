@@ -25,8 +25,8 @@ export default function BookingScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={{ paddingBottom: 16, flex: 1 , backgroundColor: Colors.background}}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         {/* Header */}
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}

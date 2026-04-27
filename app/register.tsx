@@ -44,7 +44,7 @@ export default function RegisterScreen() {
           </View>
         </LinearGradient>
 
-        <View className="w-full max-w-md mx-auto px-4 sm:px-0">
+        <View className="flex-1" style={{ backgroundColor: Colors.background }}>
           <View style={styles.formCard}>
           <Text style={styles.formTitle}>Sign Up</Text>
           <Text style={styles.formSubtitle}>Join thousands of mentees & mentors</Text>

@@ -5,6 +5,7 @@ import {
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/Colors';
+import { useState } from 'react';
 
 const { width } = Dimensions.get('window');
 
@@ -18,10 +19,12 @@ const slots = ['10:00 AM', '12:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
 const days = ['Mon\nApr 28', 'Tue\nApr 29', 'Wed\nApr 30', 'Thu\nMay 1', 'Fri\nMay 2'];
 
 export default function MentorProfileScreen() {
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedSlot, setSelectedSlot] = useState(1);
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="w-full max-w-4xl mx-auto">
+        <View style={{paddingBottom: 16 }}>
         {/* Header */}
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}
@@ -67,7 +70,7 @@ export default function MentorProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        <View className="lg:grid lg:grid-cols-12 lg:gap-8 px-5 lg:px-8 mt-6">
+        <View className="flex-row flex-wrap gap-8 px-5 lg:px-8 mt-6">
           <View className="lg:col-span-7">
             {/* About */}
             <View className="mb-6">
@@ -99,15 +102,19 @@ export default function MentorProfileScreen() {
               <Text style={styles.sectionTitle}>Availability</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daysScroll}>
                 {days.map((day, i) => (
-                  <TouchableOpacity key={day} style={[styles.dayCard, i === 0 && styles.dayCardActive]}>
-                    <Text style={[styles.dayText, i === 0 && styles.dayTextActive]}>{day}</Text>
+                  <TouchableOpacity key={day} style={[styles.dayCard, selectedDay === i && styles.dayCardActive]}
+                  onPress={() => setSelectedDay(i)}
+                  >
+                    <Text style={[styles.dayText, selectedDay === i && styles.dayTextActive]}>{day}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
               <View style={styles.slotsGrid}>
                 {slots.map((slot, i) => (
-                  <TouchableOpacity key={slot} style={[styles.slotBtn, i === 1 && styles.slotBtnActive]}>
-                    <Text style={[styles.slotText, i === 1 && styles.slotTextActive]}>{slot}</Text>
+                  <TouchableOpacity key={slot} style={[styles.slotBtn, selectedSlot === i && styles.slotBtnActive]}
+                  onPress={() => setSelectedSlot(i)}
+                  >
+                    <Text style={[styles.slotText, selectedSlot === i && styles.slotTextActive]}>{slot}</Text>
                   </TouchableOpacity>
                 ))}
               </View>

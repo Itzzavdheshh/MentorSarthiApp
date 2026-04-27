@@ -39,7 +39,7 @@ export default function MentorsScreen() {
 
   return (
     <View style={styles.container}>
-      <View className="w-full max-w-6xl mx-auto pb-8">
+      <View style={{paddingBottom: 16 }}>
       {/* Header */}
       <LinearGradient
         colors={['#4C1D95', '#6B46C1', '#9333EA']}
@@ -71,7 +71,10 @@ export default function MentorsScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ flexGrow: 1 }}
+      >
         {/* Filter Pills */}
         <ScrollView
           horizontal

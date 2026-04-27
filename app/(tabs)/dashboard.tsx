@@ -38,8 +38,8 @@ export default function DashboardScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View className="w-full max-w-5xl mx-auto pb-8">
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={{paddingBottom: 16 }}>
         {/* Header */}
         <LinearGradient
           colors={['#4C1D95', '#6B46C1', '#9333EA']}
